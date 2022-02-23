@@ -2,16 +2,17 @@ const mongo = require("../db");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 
-
 // --- GET
-module.exports.get = async (req,res,next)=>{
-   let data = await mongo.db.collection('users').find().toArray()
-   res.send(data)
-}
+module.exports.get = async (req, res, next) => {
+  let data = await mongo.db.collection("users").find().toArray();
+  res.send(data);
+};
 
 // --- ADMIN SIGNUP
 module.exports.adminSignup = async (req, res, next) => {
-  const existUser = await mongo.db.collection("users").findOne({ username: req.body.username });
+  const existUser = await mongo.db
+    .collection("users")
+    .findOne({ username: req.body.username });
   if (existUser) {
     return res.status(400).send({ msg: "This Admin already exists" });
   } else {
@@ -26,7 +27,9 @@ module.exports.adminSignup = async (req, res, next) => {
 
 // --- ADMIN LOGIN
 module.exports.adminSignin = async (req, res, next) => {
-  const existUser = await mongo.db.collection("users").findOne({ name: req.body.name });
+  const existUser = await mongo.db
+    .collection("users")
+    .findOne({ name: req.body.name });
   if (!existUser)
     return res.status(400).send({ msg: "Username is not Correct" });
 
@@ -37,4 +40,31 @@ module.exports.adminSignin = async (req, res, next) => {
   //Generate token
   const token = jwt.sign(existUser, "attendance", { expiresIn: "5hr" });
   res.send(token);
+};
+
+// ADDING NEW STAFF
+module.exports.addNewStaff = async (req, res, next) => {
+  var data = await mongo.db.collection("staff").insertOne(req.body);
+  return res.send(data);
+};
+
+// VIEW STAFF DETAILS
+
+module.exports.viewStaff = async (req, res, next) => {
+  const data = await mongo.db.collection("staff").find().toArray();
+  res.send(data);
+};
+
+
+// MODIFY STAFF DETAILS
+
+module.exports.modifyStaff = async (req, res, next) => {
+  // const data = await mongo.db.collection("staff").findOne({staffid:req.body.staffid})
+ 
+  // if(data)
+  // {
+ let data1 = await mongo.db.collection('table').updateOne({staffid:req.body.staffid},{$set:{staffname:'sanju'}},{new:true})
+ res.send(data1)
+  // }
+  next();
 };
