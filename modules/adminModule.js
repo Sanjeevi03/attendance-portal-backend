@@ -68,3 +68,9 @@ module.exports.modifyStaff = async (req, res, next) => {
   // }
   next();
 };
+
+// COUNTING STAFF
+module.exports.countStaff = async (req, res, next) => {
+  const data = await mongo.db.collection("staff").find().toArray()
+  res.send(data);
+};

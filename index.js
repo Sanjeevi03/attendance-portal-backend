@@ -6,7 +6,7 @@ const {
   adminSignin,
   get,
   addNewStaff,
-  viewStaff,modifyStaff
+  viewStaff,modifyStaff,countStaff
 } = require("./modules/adminModule");
 const { Authentication } = require("./modules/authorize");
 const app = express();
@@ -20,6 +20,7 @@ app.post("/adminlogin", adminSignin);
 app.post("/adminsignup", adminSignup);
 
 //add staff
+app.get('/countstaff',countStaff)
 app.post("/addstaff", addNewStaff);
 app.get("/viewstaff", viewStaff);
 app.get("/modifystaff", modifyStaff);
