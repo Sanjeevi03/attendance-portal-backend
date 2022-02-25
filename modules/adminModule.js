@@ -42,14 +42,47 @@ module.exports.adminSignin = async (req, res, next) => {
   res.send(token);
 };
 
+//CHANGE PASSWORD
+module.exports.adminChangePassword = async(req,res,next)=>{
+  const existUser = await mongo.db.collection("users").findOne({username:req.body.username});
+  console.log("User",existUser);
+  const isValid = await bcrypt.compare(req.body.old, existUser.password);
+  
+  if(isValid)
+  {
+    const salt1 = await bcrypt.genSalt(5);
+    const newPassword  = await bcrypt.hash(req.body.new, salt1);
+  var data = await mongo.db.collection("users").updateOne({username:req.body.username},{$set:{password:newPassword}});
+  return res.send(data)
+  }
+  else{
+  res.send({msg:"Old Password is Incorrect"})
+  }
+
+
+}
+
+
 // ADDING NEW STAFF
 module.exports.addNewStaff = async (req, res, next) => {
-  var data = await mongo.db.collection("staff").insertOne(req.body);
-  return res.send(data);
+  const existUser = await mongo.db.collection("staff").findOne({staffid:req.body.staffid});
+  if (existUser) {
+    return res.status(400).send({ msg: "Staff ID already exists" });
+  } else {
+    //encrypt
+    const salt = await bcrypt.genSalt(5);
+    req.body.staffpassword = await bcrypt.hash(req.body.staffpassword, salt);
+
+    var data = await mongo.db.collection("staff").insertOne(req.body);
+    return res.send(data);
+  }
 };
 
-// VIEW STAFF DETAILS
 
+
+
+
+// VIEW STAFF DETAILS
 module.exports.viewStaff = async (req, res, next) => {
   const data = await mongo.db.collection("staff").find().toArray();
   res.send(data);
@@ -57,7 +90,6 @@ module.exports.viewStaff = async (req, res, next) => {
 
 
 // MODIFY STAFF DETAILS
-
 module.exports.modifyStaff = async (req, res, next) => {
   // const data = await mongo.db.collection("staff").findOne({staffid:req.body.staffid})
  
