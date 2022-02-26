@@ -1,8 +1,9 @@
 const mongo = require("../db");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
+const { ObjectId } = require("mongodb");
 
-// --- GET
+
 module.exports.get =
   // --- STAFF LOGIN
   module.exports.StaffLogin = async (req, res, next) => {
@@ -55,10 +56,33 @@ module.exports.studentChangePassword = async(req,res,next)=>{
 
 
 }
+//VIEW STUDENT 
+module.exports.viewStudent = async(req,res,next)=>{
+  const data = await mongo.db.collection('student').find().toArray();
+  res.send(data)
+}
 
+// MARK ATTENDANCE 
+module.exports.markAttendance = async(req,res,next)=>{
+  const data = await mongo.db.collection('attendance-note').insertOne(req.body)
+  res.send(data)
+}
+
+
+//VIEW ATTENDANCE 
+module.exports.viewAttendance = async(req,res,next)=>{
+  const data = await mongo.db.collection('attendance-note').find().toArray();
+  res.send(data)
+}
+
+// GET LEAVE APLLICATION
+module.exports.getLeaveApplication = async(req,res,next) =>{
+  const data = await mongo.db.collection('leave').find().toArray();
+  res.send(data)
+}
 //  DELETE 
-module.exports.del = async (req, res, next) => {
-     const data = await mongo.db.collection("staff").remove({})
+module.exports.delStudent = async (req, res, next) => {
+     const data = await mongo.db.collection("student").deleteOne({regno:req.headers.regno})
      res.send(data);
    };
    
