@@ -27,3 +27,26 @@ module.exports.get =
    const data = mongo.db.collection('leave').insertOne(req.body)
    res.send(data);
  };
+
+ //CHANGE PASSWORD
+module.exports.studentChangePassword = async(req,res,next)=>{
+  const existUser = await mongo.db.collection("student").findOne({regno:req.body.regno});
+  const isValid = await bcrypt.compare(req.body.old, existUser.studentpassword);
+  
+  if(isValid)
+  {
+    const salt1 = await bcrypt.genSalt(5);
+    const newPassword  = await bcrypt.hash(req.body.new, salt1);
+  var data = await mongo.db.collection("student").updateOne({regno:req.body.regno},{$set:{studentpassword:newPassword}});
+  return res.send(data)
+  }
+  else{
+  res.send({msg:"Old Password is Incorrect"})
+  }
+}
+
+// VIEW ATTENDANCE
+module.exports.myAttendance = async(req,res,next) =>{
+  const data = await mongo.db.collection('attendance-note').find({regno:req.headers.regno}).toArray()
+  res.send(data)
+}

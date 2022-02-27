@@ -58,8 +58,6 @@ module.exports.adminChangePassword = async(req,res,next)=>{
   else{
   res.send({msg:"Old Password is Incorrect"})
   }
-
-
 }
 
 
@@ -78,10 +76,6 @@ module.exports.addNewStaff = async (req, res, next) => {
   }
 };
 
-
-
-
-
 // VIEW STAFF DETAILS
 module.exports.viewStaff = async (req, res, next) => {
   const data = await mongo.db.collection("staff").find().toArray();
@@ -89,20 +83,21 @@ module.exports.viewStaff = async (req, res, next) => {
 };
 
 
-// MODIFY STAFF DETAILS
-module.exports.modifyStaff = async (req, res, next) => {
-  // const data = await mongo.db.collection("staff").findOne({staffid:req.body.staffid})
- 
-  // if(data)
-  // {
- let data1 = await mongo.db.collection('table').updateOne({staffid:req.body.staffid},{$set:{staffname:'sanju'}},{new:true})
- res.send(data1)
-  // }
-  next();
-};
-
 // COUNTING STAFF
 module.exports.countStaff = async (req, res, next) => {
   const data = await mongo.db.collection("staff").find().toArray()
   res.send(data);
 };
+
+
+// COUNTING STUDENT
+module.exports.countStudent = async (req, res, next) => {
+  const data = await mongo.db.collection("student").find().toArray()
+  res.send(data);
+};
+
+// VIEW ATTENDANCE
+module.exports.viewAttendance = async(req,res,next) =>{
+  const data = await mongo.db.collection('attendance-note').find().toArray();
+  res.send(data)
+}

@@ -38,9 +38,8 @@ module.exports.addStudent = async (req, res, next) => {
  };
  
 //CHANGE PASSWORD
-module.exports.studentChangePassword = async(req,res,next)=>{
+module.exports.staffChangePassword = async(req,res,next)=>{
   const existUser = await mongo.db.collection("staff").findOne({staffid:req.body.staffid});
-  console.log("User",existUser);
   const isValid = await bcrypt.compare(req.body.old, existUser.staffpassword);
   
   if(isValid)
@@ -80,6 +79,8 @@ module.exports.getLeaveApplication = async(req,res,next) =>{
   const data = await mongo.db.collection('leave').find().toArray();
   res.send(data)
 }
+
+
 //  DELETE 
 module.exports.delStudent = async (req, res, next) => {
      const data = await mongo.db.collection("student").deleteOne({regno:req.headers.regno})

@@ -4,23 +4,22 @@ const mongo = require("./db");
 const {
   adminSignup,
   adminSignin,
-  get,
   addNewStaff,
   viewStaff,
-  modifyStaff,
   countStaff,
   adminChangePassword,
+  countStudent,
 } = require("./modules/adminModule");
 const {
   StaffLogin,
   del,
   addStudent,
-  studentChangePassword,
+  staffChangePassword,
   viewStudent,
   delStudent,markAttendance,viewAttendance, getLeaveApplication
 } = require("./modules/staffModule");
 const { Authentication } = require("./modules/authorize");
-const { studentLogin, applyLeave } = require("./modules/studentModule");
+const { studentLogin, applyLeave, studentChangePassword, myAttendance } = require("./modules/studentModule");
 
 const app = express();
 app.use(cors());
@@ -32,20 +31,14 @@ mongo.connect();
 app.post("/adminlogin", adminSignin);
 app.post("/adminsignup", adminSignup);
 app.put("/adminchangepsw", adminChangePassword);
-
-//add staff
 app.get("/countstaff", countStaff);
+app.get('/countstudent',countStudent)
 app.post("/addstaff", addNewStaff);
 app.get("/viewstaff", viewStaff);
-
 // staff login
-app.get("/getstaff", async (req, res, next) => {
-  let data = await mongo.db.collection("staff").find().toArray();
-  res.send(data);
-});
 app.post("/stafflogin", StaffLogin);
 app.post("/addstudent", addStudent);
-app.put("/staffchangepsw", studentChangePassword);
+app.put("/staffchangepsw", staffChangePassword);
 app.get("/viewstudent", viewStudent);
 app.post('/markattendance',markAttendance)
 app.get('/viewattendance',viewAttendance)
@@ -55,6 +48,8 @@ app.delete("/delete", delStudent);
 //student Login
 app.post('/studentlogin',studentLogin)
 app.post('/applyleave',applyLeave)
+app.put('/studentchangepsw',studentChangePassword)
+app.get('/myattendance',myAttendance)
 app.listen(process.env.PORT || 8000, () => {
   console.log("Server Started : 8000");
 });
